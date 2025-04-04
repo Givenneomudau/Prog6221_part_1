@@ -1,0 +1,34 @@
+name: C# Build and Test
+
+on:
+  push:
+    branches:
+      - main  # Change to 'master' if your repository uses it
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4  # Clones the repository
+
+      - name: Set Up .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.0.x'  # Ensure a stable version
+
+      - name: Restore Dependencies
+        run: dotnet restore  # Restores NuGet packages
+
+      - name: Build the Project
+        run: dotnet build --no-restore --configuration Release --verbosity normal  # Compiles the project
+
+      - name: Run Tests
+        run: dotnet test --no-build --configuration Release --verbosity normal  # Runs unit tests
+
+      - name: Publish Build Artifacts
+        run: dotnet publish --configuration Release --output ./publish  # Publishes output
