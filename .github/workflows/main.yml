@@ -1,0 +1,34 @@
+name: C# Build and Test
+
+on:
+  push:
+    branches:
+      - main  # Runs on every push to the main branch
+  pull_request:
+    branches:
+      - main  # Runs on every pull request to main
+
+jobs:
+  build:
+    runs-on: windows-latest  # Use the latest Windows runner
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4  # Clones the repository
+
+      - name: Set Up .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.0.x'  # Use the latest patch of .NET 7.0
+
+      - name: Restore Dependencies
+        run: dotnet restore  # Ensures dependencies are installed
+
+      - name: Build the Project
+        run: dotnet build --no-restore --configuration Release  # Builds the project
+
+      - name: Run Tests
+        run: dotnet test --no-build --configuration Release --verbosity normal  # Runs tests
+
+      - name: Publish Build Artifacts
+        run: dotnet publish --configuration Release --output ./publish  # Publishes the build output
